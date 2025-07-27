@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Svelte Web Components Test</title>
+	<style>
+		body {
+			font-family: system-ui, -apple-system, sans-serif;
+			max-width: 800px;
+			margin: 0 auto;
+			padding: 2rem;
+			line-height: 1.6;
+		}
+		.component-section {
+			margin: 2rem 0;
+			padding: 1.5rem;
+			border: 1px solid #e5e7eb;
+			border-radius: 8px;
+		}
+		.component-row {
+			display: flex;
+			gap: 1rem;
+			margin: 1rem 0;
+			flex-wrap: wrap;
+		}
+		.form-section {
+			display: grid;
+			gap: 1rem;
+			max-width: 400px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Svelte Web Components</h1>
+	
+	<div class="component-section">
+		<h2>Terminal Component Examples</h2>
+		
+		<h3>Basic Terminal with Syntax Highlighting</h3>
+<my-terminal title="Code Example" style="width: 100%; max-width: 600px;">
+$ npm install svelte
++ svelte@5.0.0
+added 1 package in 2.1s
+
+$ npm run build
+✓ built in 1.23s
+</my-terminal>
+		
+		<h3>Error Examples</h3>
+<my-terminal title="Build Errors" theme="dark" style="width: 100%; max-width: 600px;">
+$ npm run test
+✗ Test failed
+Error: Cannot find module 'missing-dependency'
+    at require (internal/modules/cjs/loader.js:883:19)
+</my-terminal>
+		
+		<h3>Git Diff Example</h3>
+<my-terminal title="Git Changes" style="width: 100%; max-width: 600px;">
+$ git diff
+diff --git a/src/main.js b/src/main.js
++ console.log('New feature added');
+- console.log('Old debug code');
+  const result = process();
+</my-terminal>
+		
+		<h3>Light Theme with Python Code</h3>
+		<my-terminal title="Python Script" theme="light" style="width: 100%; max-width: 600px;">#!/usr/bin/env python3
+
+def hello_world():
+    print("Hello, World!")
+    return "success"
+
+if __name__ == "__main__":
+    hello_world()</my-terminal>
+		
+		<h3>Different Sizes</h3>
+		<div style="display: flex; flex-direction: column; gap: 1rem;">
+			<my-terminal size="small" title="Small Terminal">$ echo "Small terminal"</my-terminal>
+			<my-terminal size="medium" title="Medium Terminal">$ echo "Medium terminal (default)"</my-terminal>
+			<my-terminal size="large" title="Large Terminal">$ echo "Large terminal"</my-terminal>
+		</div>
+		
+		<h3>Configuration Options</h3>
+		<div class="component-row">
+			<my-terminal title="No Header" showHeader="false" style="flex: 1;">
+$ echo "Terminal without header"
+No header bar shown
+			</my-terminal>
+			<my-terminal title="No Buttons" showButtons="false" style="flex: 1;">
+$ echo "Terminal without buttons"
+Header shown but no action buttons
+			</my-terminal>
+		</div>
+		
+		<h3>Read-only Mode</h3>
+		<my-terminal title="Read-only Terminal" readonly="true" style="width: 100%; max-width: 600px;">
+$ cat README.md
+# Project Documentation
+This is a read-only terminal example.
+Text selection is enabled for easy copying.
+		</my-terminal>
+		
+		<h3>Mixed Content Examples</h3>
+		<div style="display: grid; gap: 1rem; grid-template-columns: 1fr 1fr;">
+			<my-terminal title="Docker Commands" size="small">
+$ docker build -t myapp .
+Successfully built abc123def456
+$ docker run -p 8080:80 myapp
+✓ Container started successfully
+			</my-terminal>
+			
+			<my-terminal title="Server Logs" theme="light" size="small">
+[INFO] Server starting on port 3000
+[WARN] Deprecated API usage detected
+[ERROR] Database connection failed
+[INFO] Retrying connection...
+✓ Connected to database
+			</my-terminal>
+		</div>
+		
+		<h3>Long Content with Scrolling</h3>
+		<my-terminal title="Build Process" style="width: 100%; max-width: 600px; height: 300px; overflow-y: auto;">
+$ npm run build:production
+Building for production...
+
+✓ Compiling TypeScript files
+✓ Bundling JavaScript modules  
+✓ Optimizing CSS
+✓ Generating source maps
+✓ Minifying assets
+✓ Copying static files
+✓ Creating service worker
+
+Build completed successfully!
+  
+Output files:
++ dist/index.html (2.1 KB)
++ dist/main.js (45.2 KB)
++ dist/main.css (8.7 KB)
++ dist/assets/ (125 files)
+
+Total bundle size: 1.2 MB
+Gzipped size: 320 KB
+
+$ npm run deploy
+🚀 Deploying to production...
+✓ Upload complete
+✓ CDN cache invalidated
+✓ Health checks passed
+
+Deployment successful!
+URL: https://myapp.example.com
+		</my-terminal>
+	</div>
+	
+	<div class="component-section">
+		<h2>Event Logging</h2>
+		<p>Open your browser's developer console to see events from the components.</p>
+		<div id="event-log" style="background: #f3f4f6; padding: 1rem; border-radius: 4px; font-family: monospace; max-height: 200px; overflow-y: auto;"></div>
+	</div>
+	
+	<script>
+		const eventLog = document.getElementById('event-log');
+		
+		function addToLog(message) {
+			const timestamp = new Date().toLocaleTimeString();
+			eventLog.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+			eventLog.scrollTop = eventLog.scrollHeight;
+		}
+		
+		// Listen for button events
+		document.addEventListener('buttonClick', (e) => {
+			console.log('Button clicked:', e.detail);
+			addToLog(`Button clicked: ${JSON.stringify(e.detail)}`);
+		});
+		
+		// Listen for input events
+		document.addEventListener('inputChange', (e) => {
+			console.log('Input changed:', e.detail);
+			addToLog(`Input changed: value="${e.detail.value}"`);
+		});
+		
+		document.addEventListener('inputFocus', (e) => {
+			console.log('Input focused:', e.detail);
+			addToLog(`Input focused`);
+		});
+		
+		document.addEventListener('inputBlur', (e) => {
+			console.log('Input blurred:', e.detail);
+			addToLog(`Input blurred: value="${e.detail.value}"`);
+		});
+		
+		// Listen for terminal events
+		document.addEventListener('terminalCopy', (e) => {
+			console.log('Terminal copied:', e.detail);
+			addToLog(`Copied ${e.detail.commandCount} command(s) to clipboard`);
+		});
+	</script>
+	
+	<!-- Load the web components -->
+	<script type="module" src="./dist/svelte-components.js"></script>
+</body>
+</html>
